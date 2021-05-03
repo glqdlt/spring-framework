@@ -16,6 +16,8 @@
 
 package org.springframework.web.util;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -25,11 +27,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 /**
@@ -40,6 +38,38 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
  * @author Rossen Stoyanchev
  */
 public class UriComponentsTests {
+
+	@Test
+	public void wrongHostDomain(){
+
+//		https://tools.ietf.org/html/rfc3986#section-5.3
+		UriComponents aa = UriComponentsBuilder
+				.fromUriString("/")
+				.build();
+		assertThat(aa.getHost()).isEqualTo(null);
+		assertThat(aa.getScheme()).isEqualTo(null);
+		assertThat(aa.getPath()).isEqualTo("/");
+
+		UriComponents uriComponents = UriComponentsBuilder
+				.fromUriString("https://www.naver.com")
+				.build();
+		assertThat(uriComponents.getHost()).isEqualTo("www.naver.com");
+		assertThat(uriComponents.getScheme()).isEqualTo("https");
+		assertThat(uriComponents.getPath()).isEqualTo("");
+
+		UriComponents uriComponents2 = UriComponentsBuilder
+				.fromUriString("www.naver.com")
+				.build();
+		assertThat(uriComponents2.getHost()).isEqualTo("www.naver.com");
+		assertThat(uriComponents2.getPath()).isEqualTo("");
+
+		UriComponents uriComponents3 = UriComponentsBuilder
+				.fromUriString("https://www.naver.com:port/path")
+				.build();
+		assertThat(uriComponents3.getHost()).isEqualTo("www.naver.com");
+		assertThat(uriComponents3.getPort()).isEqualTo(null);
+		assertThat(uriComponents3.getPath()).isEqualTo("/path");
+	}
 
 	@Test
 	public void expandAndEncode() {

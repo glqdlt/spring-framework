@@ -16,25 +16,19 @@
 
 package org.springframework.web.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -1270,6 +1264,39 @@ class UriComponentsBuilderTests {
 	void verifyDoubleSlashReplacedWithSingleOne() {
 		String path = UriComponentsBuilder.fromPath("/home/").path("/path").build().getPath();
 		assertThat(path).isEqualTo("/home/path");
+	}
+
+	@Test
+	void verifyNonNumberPort() {
+
+		UriComponents numberPort = UriComponentsBuilder.fromUriString("http://localhost:8080/path").build();
+		assertThat(numberPort.getScheme()).isEqualTo("http");
+		assertThat(numberPort.getPort()).isEqualTo(8080);
+		assertThat(numberPort.getPath()).isEqualTo("/path");
+		assertThat(numberPort.getHost()).isEqualTo("localhost");
+
+		UriComponents stringPort = UriComponentsBuilder.fromUriString("http://localhost:port/path").build();
+		try{
+			stringPort.getPort();
+			Assertions.fail("port is must number");
+		}catch (NumberFormatException e){
+
+		}
+		assertThat(stringPort.getScheme()).isEqualTo("http");
+		assertThat(stringPort.getPath()).isEqualTo("/path");
+		assertThat(stringPort.getHost()).isEqualTo("localhost");
+
+		UriComponents nullPort = UriComponentsBuilder.fromUriString("http://localhost: /path").build();
+		try{
+			nullPort.getPort();
+			Assertions.fail("port is must number");
+		}catch (NumberFormatException e){
+
+		}
+		assertThat(nullPort.getScheme()).isEqualTo("http");
+		assertThat(nullPort.getPath()).isEqualTo("/path");
+		assertThat(nullPort.getHost()).isEqualTo("localhost");
+
 	}
 
 }

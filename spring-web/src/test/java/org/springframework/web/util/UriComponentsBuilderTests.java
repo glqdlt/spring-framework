@@ -63,6 +63,7 @@ class UriComponentsBuilderTests {
 				.build("New York", "foo+bar");
 		assertThat(uri).asString().isEqualTo(expected);
 
+//		fixme gethost 가 null 이 아니라 "" 로 되서 이슈가 생김
 		uri = UriComponentsBuilder.fromUriString("/hotel list/{city}?q={q}")
 				.build("New York", "foo+bar");
 		assertThat(uri).asString().isEqualTo(expected);

@@ -61,7 +61,7 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 
 	private static final Pattern QUERY_PARAM_PATTERN = Pattern.compile("([^&=]+)(=?)([^&]+)?");
 
-	private static final String SCHEME_PATTERN = "([^/?#]+)://";
+	private static final String SCHEME_PATTERN = "([^/?#]+):";
 
 	private static final String HTTP_PATTERN = "(?i)(http|https):";
 
@@ -83,7 +83,7 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 
 	// Regex patterns that matches URIs. See RFC 3986, appendix B
 	private static final Pattern URI_PATTERN = Pattern.compile(
-			"^(" + SCHEME_PATTERN + ")?" + "((" + USERINFO_PATTERN + "@)?" + HOST_PATTERN + "(:" + PORT_PATTERN +
+			"^(" + SCHEME_PATTERN + "//)?" + "((" + USERINFO_PATTERN + "@)?" + HOST_PATTERN + "(:" + PORT_PATTERN +
 					")?" + ")?" + PATH_PATTERN + "(\\?" + QUERY_PATTERN + ")?" + "(#" + LAST_PATTERN + ")?");
 
 	private static final Pattern HTTP_URL_PATTERN = Pattern.compile(
